@@ -1,0 +1,195 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Proxy Form</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            position: relative;
+        }
+
+        #topTitle {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+
+        #topLeftImage {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+
+        #topButtons {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+        }
+
+            #topButtons button {
+                margin-right: 10px;
+                border: none;
+                background-color: transparent;
+                color: #007bff;
+                padding: 10px 20px;
+                border-radius: 0;
+                cursor: pointer;
+                border-bottom: 2px solid transparent;
+            }
+
+                #topButtons button.active {
+                    border-bottom-color: #007bff;
+                }
+
+        #proxyForm {
+            text-align: center;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+
+            #proxyForm.hidden {
+                display: none;
+            }
+
+        #resultContainer {
+            display: none;
+            margin-top: 20px;
+        }
+
+        #infoText {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        #gamesText {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        button {
+            border: none;
+            border-radius: 5px;
+            padding: 10px 0;
+            width: 100%;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        #urlInput {
+            margin-bottom: 10px;
+            height: 25px;
+            border-radius: 10px;
+            padding: 8px 12px;
+        }
+    </style>
+</head>
+<body>
+    <div id="topLeftImage">
+        <a href="https://www.fontspace.com/category/space"><img src="https://see.fontimg.com/api/renderfont4/eZ2Bg/eyJyIjoiZnMiLCJoIjoyMywidyI6MTUwMCwiZnMiOjE1LCJmZ2MiOiIjNUMwRkY5IiwiYmdjIjoiIzBFNTlFQiIsInQiOjF9/R29kbHkgUHJveGllcw/astro-space.png" alt="Space fonts"></a>
+    </div>
+
+    <div id="topButtons">
+        <button id="proxyButton" class="active">Proxy</button>
+        <button id="gamesButton">Games</button>
+        <button id="infoButton">Info</button>
+    </div>
+
+    <form id="proxyForm" action="">
+        <input id="urlInput" type="text" placeholder="Enter URL" required="required" />
+        <br>
+        <button type="button" id="fetchButton">Go</button>
+    </form>
+
+    <div id="resultContainer"></div>
+
+    <div id="infoText">
+        <p>Coming Soon</p>
+    </div>
+
+    <div id="gamesText">
+        <p>Coming Soon</p>
+    </div>
+
+    <script>
+        const proxy = 'https://api.codetabs.com/v1/proxy?quest=';
+        const form = document.getElementById('proxyForm');
+        const urlInput = document.getElementById('urlInput');
+        const fetchButton = document.getElementById('fetchButton');
+        const resultContainer = document.getElementById('resultContainer');
+        const topButtons = document.getElementById('topButtons');
+        const proxyButton = document.getElementById('proxyButton');
+        const gamesButton = document.getElementById('gamesButton');
+        const infoButton = document.getElementById('infoButton');
+        const infoText = document.getElementById('infoText');
+        const gamesText = document.getElementById('gamesText'); // Get the games text container
+
+        const fetchUrl = () => {
+            const url = urlInput.value;
+
+            if (url) {
+                const proxiedUrl = proxy + encodeURIComponent(url);
+
+                fetch(proxiedUrl)
+                    .then(response => response.text())
+                    .then(data => {
+                        form.style.display = 'none';
+                        resultContainer.innerHTML = data;
+                        resultContainer.style.display = 'block';
+                        topButtons.style.display = 'none';
+                        infoText.style.display = 'none';
+                        gamesText.style.display = 'none'; // Hide the games text
+                    })
+                    .catch(error => {
+                        resultContainer.innerHTML = 'An error occurred: ' + error.message;
+                        resultContainer.style.display = 'block';
+                    });
+            }
+        };
+
+        fetchButton.addEventListener('click', fetchUrl);
+        urlInput.addEventListener('keydown', event => {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                fetchUrl();
+            }
+        });
+
+        const buttons = document.querySelectorAll('#topButtons button');
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                buttons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                if (button === proxyButton) {
+                    form.classList.remove('hidden');
+                    infoText.style.display = 'none';
+                    gamesText.style.display = 'none';
+                } else if (button === infoButton) {
+                    form.classList.add('hidden');
+                    infoText.style.display = 'block';
+                    gamesText.style.display = 'none';
+                } else if (button === gamesButton) {
+                    form.classList.add('hidden');
+                    infoText.style.display = 'none';
+                    gamesText.style.display = 'block';
+                } else {
+                    form.classList.add('hidden');
+                    infoText.style.display = 'none';
+                    gamesText.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
